@@ -22,9 +22,8 @@ st.write(df)
 st.subheader('Objectif de l\'étude :')
 # Description
 st.write("""
-L’objectif de l’étude est de savoir les maladies les plus courante dans chaque région les différence
-de répartition de ces maladies entre les pays développés et les pays en développement ainsi que les
-cout de traitement des différent maladies et comment varie-t-il d’un pays à l’autre.
+L'objectif de l'étude est de savoir quelles sont les maladies les plus courantes dans les différents pays et
+Comment elles sont réparties entre les différentes catégories des pays (dévelopé, en cours de développement, tiers monde).
 """)
 
 # create_disease_distribution_chart(df, 'Disease Name', 'Répartition des Maladies dans le Monde', 'Répartition des Maladies', 'Maladie')
@@ -34,6 +33,7 @@ st.subheader('Hypothèses :')
 st.write("""
          - Les maladies non transmissibles sont plus fréquentes dans les pays développés.
          - Les maladies infectieuses sont plus fréquentes dans les pays en développement.
+         - il y a une différence significative dans les taux de prévalence des maladies entre les pays développés et les pays en développement.
          """)
 st.subheader('Visualisation :')
 
@@ -126,7 +126,7 @@ else:
 
 st.sidebar.title('Recommandations')
 st.sidebar.write("""
-- **Pour les pays Développés** : Encourager la prévention des maladies non transmissibles.
+- **Pour les pays Développés** : Encourager la prévention des maladies virales grâce à des compagnes de vaccination et de sentsibilisation.
 - **Pour les pays en Développement** : Augmenter l'accès aux soins pour les maladies infectieuses.
 - **Pour les pays du Tiers-Monde** : Améliorer l'accès aux soins de santé de base.
 """)
