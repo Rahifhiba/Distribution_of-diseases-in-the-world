@@ -30,7 +30,7 @@ cout de traitement des différent maladies et comment varie-t-il d’un pays à 
 # create_disease_distribution_chart(df, 'Disease Name', 'Répartition des Maladies dans le Monde', 'Répartition des Maladies', 'Maladie')
 # create_disease_distribution_chart(df, 'Disease Category', 'Répartition des Catégories de Maladies dans le Monde', 'Répartition des Catégories de Maladies', 'Catégorie de Maladie')
 
-st.subheader('Hipothèses :')
+st.subheader('Hypothèses :')
 st.write("""
          - Les maladies non transmissibles sont plus fréquentes dans les pays développés.
          - Les maladies infectieuses sont plus fréquentes dans les pays en développement.
@@ -54,7 +54,6 @@ with tab_distribution_disease_cat:
 
 
 fig = px.pie(df, names='Country label', title='Répartition des Pays par Catégorie', hole=0.5)
-
 fig.update_layout(piecolorway=COLOR_PALETTE,)
 st.plotly_chart(fig)
 st.write("""Cette distribution montre que l'ensemble des données n'est pas équilibré en termes de représentation des différentes catégories de pays. Ce déséquilibre peut être dû à plusieurs facteurs :
@@ -79,78 +78,61 @@ with tab_top3_disease_per_world:
     get_top_3_diseases(df, "Country label", "Top 3 Maladies par Catégorie de Pays")
 
 
+st.write("""
+         Ce graphe montre que les maladies virales sont les plus courantes dans toutes les catégories de pays,
+         suivies par les maladies bactériennes et enfin les maladies neurologiques. Cela suggère que les efforts
+         de santé publique devraient se concentrer en priorité sur la prévention et le traitement des maladies virales,
+         tout en n'oubliant pas l'importance des maladies bactériennes et neurologiques.
+         """)
 get_top_3_diseases_category(df)
-# tab_top3_disease_incountcat, tab_top3_diseasecat_incountcat = st.tabs(
-#     ["Les maladies les plus courantes par catégorie de pays",
-#      "Les type de maladies les plus courantes par catégorie de Pays"
-#      ]
-# )
+st.write("""le type de maladie le plus répandu dans tous les pays sont les maladies virales, suivies des maladies bactériennes et neurologiques.""")
 
-# with tab_top3_disease_incountcat:
-#     st.write("""Les maladies les plus courantes varient considérablement d'un pays à l'autre, par contre,
-#              certaines maladies apparaissent fréquemment parmi les trois principales dans plusieurs pays""")
-#     get_top_3_diseases(df, "Country", "Top 3 Maladies par Pays")
+prevalence_graph(df)
+st.write("""
+        les pays développés ont une distribution légèrement plus dispersée et incluent des cas avec une prévalence plus élevée.
+        Cela pourrait indiquer des différences dans la manière dont certaines maladies sont répandues ou signalées dans les deux groupes de pays.
+""")
 
-# # Sélection de l'analyse
-# analysis = st.selectbox('Sélectionner une analyse', ('Prévalence des Maladies', 'Coût des Traitements', 'Comparaison Statistique'))
 
-# # Filtrer les pays par catégorie
-# country_label = st.selectbox('Sélectionner une catégorie de pays', ('First World country', 'Second World country', 'Third World country'))
+# Filtrer les données pour les pays ayant des taux de prévalence significatifs
 
-# # Exploration de la prévalence des maladies
-# if analysis == 'Prévalence des Maladies':
-#     st.subheader(f'Prévalence des Maladies - {country_label}')
+# Test ANOVA pour comparer les taux de prévalence entre les catégories de pays
+st.subheader('Comparaison Statistique (ANOVA test)')
+st.write("""**Hypothèse Nulle et Hypothèse Alternative:**
+- Hypothèse nulle (H0) : Les taux de prévalence moyens entre les différents groupes de pays sont les mêmes.
+- Hypothèse alternative (H1) : Les taux de prévalence moyens entre les différents groupes de pays sont différents.""")
+df_anova = df[['Country label', 'Prevalence Rate (%)']]
 
-#     # Filtrer le dataset par catégorie de pays
-#     df_filtered = df[df['Country label'] == country_label]
+# Regrouper les catégories
+df_anova['Country label'] = df_anova['Country label'].replace({'Second World country': 'Developing World', 'Third World country': 'Developing World'})
 
-#     # Graphique de la prévalence des maladies par pays
-#     fig = px.bar(df_filtered, x='Disease Name', y='Prevalence Rate (%)',
-#                  title=f'Taux de Prévalence des Maladies dans les {country_label}')
-#     st.plotly_chart(fig)
+anova_result = stats.f_oneway(
+    df_anova[df_anova['Country label'] == 'First World country']['Prevalence Rate (%)'],
+    df_anova[df_anova['Country label'] == 'Developing World']['Prevalence Rate (%)']
+)
 
-#     # Boxplot pour comparer les taux de prévalence
-#     fig_box = px.box(df_filtered, x='Country label', y='Prevalence Rate (%)',
-#                      title='Comparaison des taux de prévalence')
-#     st.plotly_chart(fig_box)
-
-# # Exploration des coûts de traitement
-# elif analysis == 'Coût des Traitements':
-#     st.subheader(f'Coût Moyen des Traitements - {country_label}')
-
-#     # Filtrer le dataset par catégorie de pays
-#     df_filtered = df[df['Country label'] == country_label]
-
-#     # Calcul du coût moyen par maladie
-#     avg_treatment_cost = df_filtered.groupby(['Disease Name'])['Average Treatment Cost (USD)'].mean().reset_index()
-
-#     # Graphique des coûts moyens
-#     fig_cost = px.bar(avg_treatment_cost, x='Disease Name', y='Average Treatment Cost (USD)',
-#                      title=f'Coût Moyen des Traitements dans les {country_label}')
-#     st.plotly_chart(fig_cost)
-
-# # Test statistique (ANOVA)
-# elif analysis == 'Comparaison Statistique':
-#     st.subheader('Test ANOVA - Différences de prévalence entre les catégories de pays')
-
-#     # Effectuer le test ANOVA
-#     df_anova = df[['Country label', 'Prevalence Rate (%)']]
-#     anova_result = stats.f_oneway(
-#         df_anova[df_anova['Country label'] == 'First World country']['Prevalence Rate (%)'],
-#         df_anova[df_anova['Country label'] == 'Second World country']['Prevalence Rate (%)'],
-#         df_anova[df_anova['Country label'] == 'Third World country']['Prevalence Rate (%)']
-#     )
-
-#     # Afficher les résultats du test ANOVA
-#     st.write(f'Résultat du test ANOVA: F={anova_result.statistic}, p={anova_result.pvalue}')
-#     if anova_result.pvalue < 0.05:
-#         st.write("Les différences de prévalence entre les catégories de pays sont statistiquement significatives.")
-#     else:
-#         st.write("Aucune différence significative n'a été trouvée entre les catégories de pays.")
+st.write(f"""
+**Résultats du test ANOVA :**
+- **F-statistique** : {anova_result.statistic:.4f}
+- **p-value** : {anova_result.pvalue:.4f}
+""")
+if anova_result.pvalue < 0.05:
+    st.write("Les différences de prévalence entre les catégories de pays sont statistiquement significatives, on rejet donc l'hypothèse nulle.")
+else:
+    st.write("""Aucune différence significative n'a été trouvée entre les catégories de pays,
+             nous concluons qu'on ne peut pas rejeter l'hypothèse nulle.""")
 
 # Recommandations
-about = st.sidebar.expander("Explication des categories des maladies")
-about.write("""
+
+st.sidebar.title('Recommandations')
+st.sidebar.write("""
+- **Pour les pays Développés** : Encourager la prévention des maladies non transmissibles.
+- **Pour les pays en Développement** : Augmenter l'accès aux soins pour les maladies infectieuses.
+- **Pour les pays du Tiers-Monde** : Améliorer l'accès aux soins de santé de base.
+""")
+
+explication = st.sidebar.expander("Explication de types des maladies")
+explication.write("""
 - **Viral :** Maladies causées par des virus.
 - **Parasitic :** Maladies causées par des parasites.
 - **Genetic :** Maladies liées à des anomalies génétiques.
@@ -163,12 +145,5 @@ about.write("""
 - **Infectious :** Maladies transmissibles, souvent d'origine virale ou bactérienne.
 - **Neurological :** Maladies affectant le système nerveux.
 """)
-
-# st.sidebar.title('Explication des categories des maladies')
-# st.sidebar
-st.sidebar.title('Recommandations')
-st.sidebar.write("""
-- **Pays Développés** : Encourager la prévention des maladies non transmissibles.
-- **Pays en Développement** : Augmenter l'accès aux soins pour les maladies infectieuses.
-- **Pays du Tiers-Monde** : Améliorer l'accès aux soins de santé de base.
-""")
+source = st.sidebar.expander("Source de données")
+source.write("""[Global health statistics](https://www.kaggle.com/datasets/malaiarasugraj/global-health-statistics/data)""")

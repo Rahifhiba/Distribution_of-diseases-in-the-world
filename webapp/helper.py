@@ -2,8 +2,6 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
 
 COLOR_PRIMARY = "#6e7b91"
@@ -66,6 +64,7 @@ def get_top_3_diseases(df, colname, title):
     for country in countries:
         df_country = df_counts[df_counts[colname] == country]
         top_3 = df_country.nlargest(3, 'Count')
+        top_3 = df_country.sort_values(by='Count', ascending=False).drop_duplicates(subset=['Disease Name']).head(3)
         top_3_diseases.append(top_3)
 
     top_diseases_df = pd.concat(top_3_diseases).reset_index(drop=True)
@@ -82,16 +81,28 @@ def get_top_3_diseases_category(df):
     for label in country_labels:
         df_label = df[df["Country label"] == label]
         df_category_count = df_label.groupby('Disease Category').size().reset_index(name='Count')
-        top_3 = df_category_count.nlargest(3, 'Count')
+        top_3 = df_category_count.sort_values(by=['Count', 'Disease Category'], ascending=[False, True]).head(3)
+
         top_3['Country label'] = label
         top_3_diseases.append(top_3)
 
     top_diseases_cat_df = pd.concat(top_3_diseases).reset_index(drop=True)
 
     fig_pie = px.pie(top_diseases_cat_df, values='Count', names='Disease Category',
-                     title='Top 3 Disease Categories in Each World Category', facet_col='Country label')
+                     title='Top 3 des maladies répondue dans chacune des categories des pays', facet_col='Country label')
     fig_pie.update_layout(piecolorway=COLOR_PALETTE)
     st.plotly_chart(fig_pie)
+
+
+def prevalence_graph(df):
+    """Créer un graphique de prévalence par catégorie de pays regroupée"""
+    df['Country Group'] = df['Country label'].apply(lambda x: 'Premier Monde' if x == 'First World country' else 'Pays en Développement (second et troisième monde)')
+
+    prevalence_by_group = df.groupby(['Country Group', 'Disease Name'])['Prevalence Rate (%)'].mean().reset_index()
+
+    fig = px.box(prevalence_by_group, x='Country Group', y='Prevalence Rate (%)',
+                 title='Prévalence par groupe de pays')
+    st.plotly_chart(fig)
 
 
 
