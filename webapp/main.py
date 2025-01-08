@@ -123,6 +123,22 @@ else:
              nous concluons qu'on ne peut pas rejeter l'hypothèse nulle.""")
 
 # Recommandations
+# add + icon in sidebar in #c2253e color
+
+st.sidebar.markdown(
+    """
+    <style>
+    .plus-icon {
+        color: #c2253e;
+        font-size: 85px;
+        font-weight: bold;
+        height: 65px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Display the "+" icon in the sidebar
+st.sidebar.markdown('<p class="plus-icon">+</p>', unsafe_allow_html=True)
 
 st.sidebar.title('Recommandations')
 st.sidebar.write("""
@@ -130,7 +146,6 @@ st.sidebar.write("""
 - **Pour les pays en Développement** : Augmenter l'accès aux soins pour les maladies infectieuses.
 - **Pour les pays du Tiers-Monde** : Améliorer l'accès aux soins de santé de base.
 """)
-
 explication = st.sidebar.expander("Explication de types des maladies")
 explication.write("""
 - **Viral :** Maladies causées par des virus.
