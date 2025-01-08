@@ -78,19 +78,18 @@ with tab_top3_disease_per_world:
     get_top_3_diseases(df, "Country label", "Top 3 Maladies par Catégorie de Pays")
 
 
-st.write("""
-         Ce graphe montre que les maladies virales sont les plus courantes dans toutes les catégories de pays,
-         suivies par les maladies bactériennes et enfin les maladies neurologiques. Cela suggère que les efforts
-         de santé publique devraient se concentrer en priorité sur la prévention et le traitement des maladies virales,
-         tout en n'oubliant pas l'importance des maladies bactériennes et neurologiques.
-         """)
 get_top_3_diseases_category(df)
 st.write("""le type de maladie le plus répandu dans tous les pays sont les maladies virales, suivies des maladies bactériennes et neurologiques.""")
 
 prevalence_graph(df)
 st.write("""
-        les pays développés ont une distribution légèrement plus dispersée et incluent des cas avec une prévalence plus élevée.
-        Cela pourrait indiquer des différences dans la manière dont certaines maladies sont répandues ou signalées dans les deux groupes de pays.
+       En moyenne, la prévalence des maladies n'est pas très différente entre les pays en développement et les pays développés.
+       Les pays en développement ont une distribution plus concentrée, ce qui suggère que les taux de prévalence sont plus uniformes dans ces régions.
+       Les pays développé ont une plus grande variabilité des taux de prévalence.
+
+       Cela montre que les maladies sont présentes partout, mais que dans les pays en développement,
+       leur prévalence est relativement homogène, tandis que dans les pays développés, des disparités
+       importantes existent, influencées par des facteurs nationaux variés.
 """)
 
 
